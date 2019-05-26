@@ -1,28 +1,41 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
+
+import Form from './components/Form'
+import Details from './components/Details'
+
+const SEC_KEY = 'FLWSECK-e6db11d1f8a6208de8cb2f94e293450e-X'
+
+const Bvn_number = '12345678901'
 
 class App extends Component {
+  state = {
+    data: []
+  }
+  getBvn = async e => {
+    const details = e.target.details.value
+    console.log(details)
+    e.preventDefault()
+    const sec_key = await fetch(
+      `https://cors-anywhere.herokuapp.com/https://ravesandboxapi.flutterwave.com/v2/kyc/bvn/${Bvn_number}?seckey=${SEC_KEY}`
+    )
+    const data = await sec_key.json()
+    this.setState({ data: data.data })
+    console.log(this.state.data.bvn)
+    // console.log(data.data.bvn)
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+      <div className='App'>
+        <header className='App-header'>
+          <h1 className='App-title'>BVN Validate</h1>
         </header>
+        <Form getBvn={this.getBvn} />
+        <Details data={this.state.data} />
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
